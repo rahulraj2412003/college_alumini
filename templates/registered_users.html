@@ -1,0 +1,117 @@
+{% extends "admin_dashboard.html" %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /* Reuse the consistent button style from your other pages */
+    .btn-filter {
+        background: #001529;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .btn-filter:hover { background: #1890ff; }
+    
+    .select-input {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        outline: none;
+        min-width: 160px;
+    }
+</style>
+
+<div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+    <h1>Event Attendance</h1>
+    
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <form method="GET" action="" style="display: flex; gap: 10px; align-items: center;">
+            <select name="event" class="select-input">
+                <option value="">All Events</option>
+                {% for event in all_events %}
+                    <option value="{{ event.id }}" {% if request.GET.event == event.id|stringformat:"s" %}selected{% endif %}>
+                        {{ event.title }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <select name="department" class="select-input">
+                <option value="">All Departments</option>
+                <option value="MBA" {% if request.GET.department == "MBA" %}selected{% endif %}>MBA</option>
+                <option value="BBA" {% if request.GET.department == "BBA" %}selected{% endif %}>BBA</option>
+                <option value="BCOM" {% if request.GET.department == "BCOM" %}selected{% endif %}>BCOM</option>
+                <option value="BCA" {% if request.GET.department == "BCA" %}selected{% endif %}>BCA</option>
+                <option value="MCOM" {% if request.GET.department == "MCOM" %}selected{% endif %}>MCOM</option>
+            </select>
+
+            <button type="submit" class="btn-filter">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            
+            {% if request.GET.event or request.GET.department %}
+                <a href="{% url 'registered_users' %}" style="color: #ff4d4f; text-decoration: none; font-size: 0.85rem;">Clear</a>
+            {% endif %}
+        </form>
+
+        <div class="badge" style="background: #001529; color: white; padding: 8px 15px; border-radius: 6px; font-weight: bold;">
+            Records: {{ registrations.count }}
+        </div>
+    </div>
+</div>
+
+<div class="card" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid #f0f2f5;">
+                <th style="text-align: left; padding: 12px; color: #64748b; font-size: 0.85rem;">STUDENT REG NO</th>
+                <th style="text-align: left; padding: 12px; color: #64748b; font-size: 0.85rem;">DEPT</th>
+                <th style="text-align: left; padding: 12px; color: #64748b; font-size: 0.85rem;">EVENT REGISTERED</th>
+                <th style="text-align: left; padding: 12px; color: #64748b; font-size: 0.85rem;">REG DATE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reg in registrations %}
+            <tr style="border-bottom: 1px solid #f0f2f5;">
+                <td style="padding: 12px;"><strong>{{ reg.student.register_number }}</strong></td>
+                <td style="padding: 12px;"><span style="font-size: 0.85rem; color: #64748b;">{{ reg.student.department }}</span></td>
+                <td style="padding: 12px;">
+                    <span class="badge" style="background:#e6f7ff; color:#1890ff; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                        {{ reg.event.title }}
+                    </span>
+                </td>
+                <td style="padding: 12px; color: #475569; font-size: 0.85rem;">
+                    {{ reg.registration_date|date:"M d, Y" }} <span style="color: #94a3b8; margin-left: 5px;">{{ reg.registration_date|date:"P" }}</span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 20px; color: #94a3b8;">No records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{% if message.tags == 'success' %}Success!{% else %}Notification{% endif %}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}", // matches 'success', 'error', 'warning', 'info'
+                confirmButtonColor: '#001529',
+                iconColor: '{% if message.tags == "success" %}#c5b358{% endif %}'
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+{% endblock %}

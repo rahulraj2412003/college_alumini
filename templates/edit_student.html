@@ -1,0 +1,26 @@
+<div class="form-card">
+    <h2><i class="fas fa-user-edit"></i> Edit Student Profile</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <label>Register Number</label>
+            <input type="text" name="register_number" value="{{ student.register_number }}" required>
+        </div>
+        <div class="input-group">
+            <label>Department</label>
+            <select name="department" required>
+                <option value="MBA" {% if student.department == 'MBA' %}selected{% endif %}>MBA</option>
+                <option value="BBA" {% if student.department == 'BBA' %}selected{% endif %}>BBA</option>
+                <option value="BCOM" {% if student.department == 'BCOM' %}selected{% endif %}>B.Com</option>
+                <option value="BCA" {% if student.department == 'BCA' %}selected{% endif %}>BCA</option>
+                <option value="MCOM" {% if student.department == 'MCOM' %}selected{% endif %}>M.Com</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Passed Out Year</label>
+            <input type="number" name="passed_out_year" value="{{ student.passed_out_year }}" required>
+        </div>
+        <button type="submit" class="btn-save">Update Record</button>
+        <a href="{% url 'manage_students' %}" class="back-link">Cancel</a>
+    </form>
+</div>

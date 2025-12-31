@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Add New Event</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --dark-navy: #1e293b;
+            --bg-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--dark-navy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: var(--white);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark-navy);
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--primary-blue);
+            background: #eff6ff;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper i {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--dark-navy);
+        }
+
+        @media (max-width: 480px) {
+            .form-container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Add New Event</h2>
+            <p>Create a new announcement for students and alumni.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" id="eventForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" name="title" placeholder="e.g. Annual Alumni Meet 2025" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe the event details, agenda, and speakers..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Date of Event</label>
+                <input type="date" name="date" required>
+            </div>
+
+            <div class="form-group">
+                <label>Event Image Cover</label>
+                <div class="file-input-wrapper">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p id="file-name">Click to upload or drag and drop</p>
+                    <input type="file" name="image" id="image-upload" required onchange="updateFileName()">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-plus-circle"></i> Publish Event
+            </button>
+        </form>
+
+        <a href="/events/admin-dashboard/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        function updateFileName() {
+            const input = document.getElementById('image-upload');
+            const fileNameDisplay = document.getElementById('file-name');
+            if (input.files.length > 0) {
+                fileNameDisplay.innerText = "Selected: " + input.files[0].name;
+                fileNameDisplay.style.color = "#3b82f6";
+            }
+        }
+
+        // Catch Django success/error messages
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    title: "{% if message.tags == 'success' %}Success!{% else %}Notification{% endif %}",
+                    text: "{{ message }}",
+                    icon: "{{ message.tags }}", // 'success', 'error', 'info', etc.
+                    confirmButtonColor: '#3b82f6'
+                });
+            {% endfor %}
+        {% endif %}
+
+        // Add loading effect to button
+        const form = document.getElementById('eventForm');
+        const btn = document.getElementById('submitBtn');
+
+        form.onsubmit = function() {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+            btn.style.opacity = '0.8';
+            btn.style.pointerEvents = 'none';
+        };
+    </script>
+
+</body>
+</html>

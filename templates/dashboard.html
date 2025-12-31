@@ -1,0 +1,323 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parivarthana Business School | Campus Portal</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #002147;
+            --accent: #a51c30;
+            --gold: #c5b358;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --text-grey: #666;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; line-height: 1.6; }
+        html { scroll-behavior: smooth; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: var(--primary);
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 2000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo-img { height: 50px; width: auto; border-radius: 4px; }
+        .logo-text { color: var(--white); font-family: 'Merriweather', serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .nav-links { display: flex; list-style: none; align-items: center; transition: 0.4s ease; }
+        .nav-links li a { color: var(--white); text-decoration: none; margin-left: 1.8rem; font-size: 0.85rem; font-weight: 600; transition: 0.3s; }
+        .nav-links li a:hover { color: var(--gold); }
+        
+        .logout-link { background: var(--accent); padding: 7px 15px; border-radius: 4px; color: white !important; margin-left: 1.5rem; }
+
+        .mobile-menu-icon { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
+
+        /* --- HERO SECTION --- */
+        .hero-slider {
+            height: 100vh; position: relative; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; text-align: center; color: white;
+        }
+        .slide-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            animation: zoomFade 24s infinite; opacity: 0; z-index: 1;
+        }
+        .slide-bg::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,33,71,0.85), rgba(0,33,71,0.4), rgba(0,33,71,0.85));
+        }
+        .slide-bg:nth-child(1) { background-image: url("{% static 'images/college_slide1.jpeg' %}"); animation-delay: 0s; }
+        .slide-bg:nth-child(2) { background-image: url("{% static 'images/college_slide2.png' %}"); animation-delay: 8s; }
+        .slide-bg:nth-child(3) { background-image: url("{% static 'images/college_slide3.png' %}"); animation-delay: 16s; }
+
+        @keyframes zoomFade {
+            0% { opacity: 0; transform: scale(1); }
+            10% { opacity: 1; }
+            33% { opacity: 1; }
+            43% { opacity: 0; transform: scale(1.1); }
+            100% { opacity: 0; }
+        }
+
+        .hero-content { position: relative; z-index: 10; max-width: 900px; padding: 0 20px; }
+        .hero-content h1 { font-family: 'Merriweather', serif; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.2; margin-bottom: 1.5rem; font-weight: 900; }
+        .btn-impact {
+            background: var(--gold); color: var(--primary); padding: 16px 40px;
+            text-decoration: none; border-radius: 50px; font-weight: 700;
+            display: inline-flex; align-items: center; gap: 12px; transition: 0.3s;
+        }
+
+        /* --- IMPACTFUL HEADINGS --- */
+        .section-padding { padding: 90px 10%; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-family: 'Merriweather', serif; font-size: 2.8rem; color: var(--primary); font-weight: 900; }
+        .section-header .line { width: 60px; height: 5px; background: var(--gold); margin: 15px auto; }
+
+        /* --- OFFERS --- */
+        .offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .offer-card { background: var(--light); padding: 40px 30px; border-radius: 15px; text-align: center; transition: 0.4s; border: 1px solid #eee; }
+        .offer-card:hover { transform: translateY(-10px); background: var(--primary); color: white; }
+        .offer-card i { font-size: 3rem; color: var(--gold); margin-bottom: 20px; }
+
+        /* --- MODERN EVENTS LAYOUT WITH FEEDBACK ICON --- */
+        .event-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .event-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; transition: 0.3s; position: relative; }
+        .event-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .event-img { width: 100%; height: 200px; object-fit: cover; }
+        .event-body { padding: 25px; }
+        .event-body h3 { color: var(--primary); margin-bottom: 10px; font-weight: 700; }
+        
+        .event-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #eee; pt: 15px; }
+        .event-link { color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+        .event-feedback-icon { 
+            background: var(--gold); color: var(--primary); width: 35px; height: 35px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; transition: 0.3s;
+        }
+        .event-feedback-icon:hover { background: var(--primary); color: white; }
+
+        /* --- CONTINUOUS GALLERY (SEAMLESS) --- */
+        .gallery-container { padding: 40px 0 80px; overflow: hidden; background: #fff; }
+        .gallery-track {
+            display: flex;
+            width: calc(370px * 12); 
+            animation: scrollInfinite 25s linear infinite;
+        }
+        .gallery-item { width: 350px; height: 250px; margin: 0 10px; flex-shrink: 0; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+        @keyframes scrollInfinite {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-370px * 6)); }
+        }
+
+        /* --- CLASSIC CONTACT CSS --- */
+        .map-section { padding-top: 80px; background: var(--light); }
+        .map-frame { height: 450px; width: 100%; border-bottom: 6px solid var(--gold); border-top: 1px solid #ddd; }
+        
+        .contact-footer-unified { background: var(--primary); color: white; padding: 80px 10% 40px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        .footer-col h3 { color: var(--gold); margin-bottom: 25px; font-family: 'Merriweather'; font-size: 1.3rem; }
+        .contact-item { display: flex; gap: 15px; margin-bottom: 15px; font-size: 0.9rem; opacity: 0.9; }
+        .contact-item i { color: var(--gold); width: 20px; }
+        .bottom-bar { text-align: center; padding-top: 40px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.6; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            .mobile-menu-icon { display: block; }
+            .nav-links {
+                position: fixed; top: 0; right: -100%; height: 100vh; width: 80%;
+                background: var(--primary); flex-direction: column; justify-content: center;
+                transition: 0.5s; z-index: 2050;
+            }
+            .nav-links.active { right: 0; }
+            .nav-links li { margin: 20px 0; }
+        }
+        .profile-nav-link {
+    color: var(--gold) !important;
+    border: 1px solid var(--gold);
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-nav-link:hover {
+    background: var(--gold);
+    color: var(--primary) !important;
+}
+
+.profile-nav-link i {
+    font-size: 1.1rem;
+}
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo-container">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="logo-img">
+        <span class="logo-text">Parivarthana Business School</span>
+    </a>
+    <div class="mobile-menu-icon" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#offers">Offers</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+
+        {% if request.session.user %}
+            {% if request.session.user == 'student' %}
+                <li><a href="{% url 'student_profile' %}" class="profile-nav-link"><i class="fas fa-user-circle"></i> Profile</a></li>
+            {% elif request.session.user == 'teacher' or request.session.user == 'admin' %}
+                <li><a href="{% url 'admin_dashboard' %}" class="profile-nav-link"><i class="fas fa-user-shield"></i> Dashboard</a></li>
+            {% endif %}
+            
+            <li><a href="{% url 'logout' %}" class="logout-link">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'student_login' %}">Login</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<section id="home" class="hero-slider">
+    <div class="slide-bg"></div><div class="slide-bg"></div><div class="slide-bg"></div>
+    <div class="hero-content">
+        <h1>Transforming Ambition Into Global Leadership</h1>
+        <p>Experience the most impactful business education in Mysore.</p>
+        <a href="#events" class="btn-impact">Join Upcoming Events <i class="fas fa-calendar-check"></i></a>
+    </div>
+</section>
+
+<section id="offers" class="section-padding">
+    <div class="section-header">
+        <h2>What We Are Offering</h2>
+        <div class="line"></div>
+    </div>
+    <div class="offer-grid">
+        <div class="offer-card">
+            <i class="fas fa-user-graduate"></i>
+            <h3>Management Mastery</h3>
+            <p>Industry-aligned MBA and BBA curriculums with a focus on practical leadership.</p>
+        </div>
+        <div class="offer-card">
+            <i class="fas fa-laptop-code"></i>
+            <h3>Technical Excellence</h3>
+            <p>Advanced MCA training with state-of-the-art labs and coding bootcamps.</p>
+        </div>
+        <div class="offer-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Placement Success</h3>
+            <p>100% placement assistance with top MNCs and global corporate networks.</p>
+        </div>
+    </div>
+</section>
+
+<section id="gallery" class="gallery-container">
+    <div class="section-header">
+        <h2>Life At Parivarthana</h2>
+        <div class="line"></div>
+    </div>
+    <div class="gallery-track">
+        <div class="gallery-item"><img src="{% static 'images/college_slide1.jpeg' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide2.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide3.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide4.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide5.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide6.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide1.jpeg' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide2.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide3.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide4.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide5.png' %}"></div>
+        <div class="gallery-item"><img src="{% static 'images/college_slide6.png' %}"></div>
+    </div>
+</section>
+
+<section id="events" class="section-padding" style="background: var(--light);">
+    <div class="section-header">
+        <h2>Upcoming Campus Events</h2>
+        <div class="line"></div>
+    </div>
+    <div class="event-grid">
+        {% if events %}
+            {% for event in events %}
+            <div class="event-card">
+                <img src="{{ event.image.url }}" class="event-img">
+                <div class="event-body">
+                    <h3>{{ event.title }}</h3>
+                    <p>{{ event.description|truncatechars:100 }}</p>
+                    <div class="event-footer">
+    <a href="{% url 'register_event' event.id %}" class="event-link">REGISTER NOW →</a>
+    
+    <a href="{% url 'submit_feedback' event.id %}" class="event-feedback-icon" title="Give Feedback">
+        <i class="fas fa-comment-dots"></i>
+    </a>
+</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; grid-column: 1/-1;">No events currently scheduled. Check back soon!</p>
+        {% endif %}
+    </div>
+</section>
+
+<section id="location" class="map-section">
+    <div class="section-header">
+        <h2>Find Us In Mysore</h2>
+        <div class="line"></div>
+    </div>
+    <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3897.436730335019!2d76.60956431525547!3d12.353381691263884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baaf77f0f6f4a81%3A0x6d3d4b680193439b!2sParivarthana%20Business%20School!5e0!3m2!1sen!2sin!4v1625654321000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+</section>
+
+<footer id="contact" class="contact-footer-unified">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h3>Contact Details</h3>
+            <div class="contact-item"><i class="fas fa-map-marker-alt"></i><p>Plot 436-B, Hebbal Industrial Area, Mysore-16</p></div>
+            <div class="contact-item"><i class="fas fa-phone"></i><p>+91 97401 19888</p></div>
+            <div class="contact-item"><i class="fas fa-envelope"></i><p>info@parivarthanabschool.in</p></div>
+        </div>
+        <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul style="list-style: none; opacity: 0.8;">
+                <li><a href="#home" style="color:white; text-decoration:none;">Home Portal</a></li>
+                <li><a href="#offers" style="color:white; text-decoration:none;">Academic Programs</a></li>
+                <li><a href="#events" style="color:white; text-decoration:none;">Latest Events</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Follow Us</h3>
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <a href="#" style="color: var(--gold); font-size: 1.5rem;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color: var(--gold); font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-bar">© 2025 Parivarthana Business School. All Rights Reserved.</div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('navLinks').classList.toggle('active');
+    }
+</script>
+</body>
+</html>

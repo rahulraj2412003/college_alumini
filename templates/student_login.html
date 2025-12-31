@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Verification | Parivarthana Business School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #002147;
+            --secondary-blue: #2a4858;
+            --accent-gold: #fdbb2d;
+            --bg-gray: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-top: 6px solid var(--primary-blue);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header i { font-size: 3rem; color: var(--primary-blue); margin-bottom: 10px; }
+        .header h2 { margin: 0; color: var(--primary-blue); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .header p { color: #666; font-size: 0.9rem; margin-top: 5px; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--secondary-blue); font-size: 0.85rem; }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 40px; /* Adjusted for label spacing */
+            color: #999;
+            z-index: 5;
+        }
+
+        /* Styling for both Input and Select */
+        .input-group input, 
+        .input-group select {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background-color: white;
+            color: #333;
+            appearance: none; /* Removes default browser styling for select */
+        }
+
+        .input-group input:focus, 
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 8px rgba(26, 42, 108, 0.1);
+        }
+
+        /* Custom Arrow for Select */
+        .input-group.select-box::after {
+            content: "\f107";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover { background: #0d1a4a; transform: translateY(-2px); }
+
+        .footer-note { text-align: center; margin-top: 25px; font-size: 0.8rem; color: #888; }
+        .footer-note a { color: var(--primary-blue); text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 480px) { .auth-card { padding: 25px; } }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+    <div class="header">
+        <i class="fas fa-user-check"></i>
+        <h2>Alumni Login</h2>
+    </div>
+
+    <form method="POST" action="">
+        {% csrf_token %} {% if error %}
+            <p style="color: red; text-align: center; font-size: 0.8rem;">{{ error }}</p>
+        {% endif %}
+
+        <div class="input-group">
+            <label>Register Number</label>
+            <i class="fas fa-id-card"></i>
+            <input type="text" name="register_number" placeholder="Enter Register No." required>
+        </div>
+
+        <div class="input-group select-box">
+            <label>Department</label>
+            <i class="fas fa-graduation-cap"></i>
+            <select name="department" required>
+                <option value="" disabled selected>Select Department</option>
+                <option value="MBA">MBA - Business Administration</option>
+                <option value="BBA">BBA - Business Administration</option>
+                <option value="BCOM">B.Com - Commerce</option>
+                <option value="BCA">BCA - Computer Applications</option>
+                <option value="MCOM">M.Com - Commerce</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Passed Out Year</label>
+            <i class="fas fa-calendar-alt"></i>
+            <input type="number" name="passed_out_year" placeholder="YYYY" required>
+        </div>
+
+        <button type="submit">Verify & Login</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student | PBS Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --sidebar-bg: #002147; --accent: #c5b358; --bg: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding-top: 50px; }
+        .form-card { background: white; padding: 40px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .form-card h2 { color: var(--sidebar-bg); margin-bottom: 25px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+        .btn-save { background: var(--sidebar-bg); color: white; border: none; width: 100%; padding: 14px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-save:hover { background: #003366; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="form-card">
+        <h2><i class="fas fa-user-plus"></i> Add New Student</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Register Number</label>
+                <input type="text" name="register_number" placeholder="e.g. 21PBS101" required>
+            </div>
+            <div class="input-group">
+                <label>Department</label>
+                <select name="department" required>
+                    <option value="" disabled selected>Select Department</option>
+                    <option value="MBA">MBA - Business Administration</option>
+                    <option value="BBA">BBA - Business Administration</option>
+                    <option value="BCOM">B.Com - Commerce</option>
+                    <option value="BCA">BCA - Computer Applications</option>
+                    <option value="MCOM">M.Com - Commerce</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Passed Out Year</label>
+                <input type="number" name="passed_out_year" placeholder="YYYY" required>
+            </div>
+            <button type="submit" class="btn-save">Create Student Record</button>
+            <a href="{% url 'manage_students' %}" class="back-link">Cancel and Go Back</a>
+        </form>
+    </div>
+</body>
+</html>

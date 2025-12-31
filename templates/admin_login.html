@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBS Portal | Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #002147; /* Matching your sidebar color */
+            --accent-gold: #C5B358;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+            --text-main: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        .login-wrapper {
+            display: flex;
+            width: 950px;
+            height: 600px;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Updated Left Side: PBS Branding */
+        .brand-side {
+            flex: 1;
+            /* Using a high-quality University Campus Image */
+            background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)),
+                        url('https://images.unsplash.com/photo-1541339907198-e08756defe93?q=80&w=1470&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            padding: 50px;
+            text-align: center;
+        }
+
+        .brand-side .logo-circle {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-side i { font-size: 3.5rem; color: var(--accent-gold); }
+        .brand-side h2 { font-size: 2.4rem; margin-bottom: 15px; letter-spacing: 1px; }
+        .brand-side p { font-size: 1rem; line-height: 1.6; opacity: 0.9; max-width: 300px; }
+        .brand-side .divider { width: 50px; height: 3px; background: var(--accent-gold); margin: 20px 0; }
+
+        /* Right Side: Form Content */
+        .form-side {
+            flex: 1.1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header { margin-bottom: 35px; }
+        .form-header h3 { color: var(--primary-blue); font-size: 1.8rem; margin-bottom: 10px; }
+        .form-header p { color: #64748b; font-size: 0.95rem; }
+
+        .input-group { margin-bottom: 25px; position: relative; }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 14px;
+            top: 40px;
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 33, 71, 0.1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 10px 15px -3px rgba(0, 33, 71, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            background: #003366;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 33, 71, 0.4);
+        }
+
+        .form-footer { margin-top: 30px; text-align: center; font-size: 0.9rem; color: #64748b; }
+        .form-footer a { color: var(--primary-blue); text-decoration: none; font-weight: 700; }
+        .form-footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 900px) {
+            .brand-side { display: none; }
+            .login-wrapper { width: 450px; height: auto; margin: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="brand-side">
+            <div class="logo-circle">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h2>PBS PORTAL</h2>
+            <div class="divider"></div>
+            <p>Your gateway to the professional alumni network. Connect, engage, and grow with our academic community.</p>
+        </div>
+
+        <div class="form-side">
+            <div class="form-header">
+                <h3>Portal Login</h3>
+                <p>Welcome back! Access your secure dashboard.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label>Username / Email</label>
+                    <i class="fas fa-envelope"></i>
+                    <input type="text" name="username" placeholder="Enter your credentials" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit">Sign In to Dashboard</button>
+            </form>
+
+            <div class="form-footer">
+                <p>Trouble logging in? <a href="#">Contact Admin</a></p>
+                <p style="margin-top: 15px;"><a href="/">&larr; Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

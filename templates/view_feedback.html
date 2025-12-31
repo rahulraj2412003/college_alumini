@@ -1,0 +1,23 @@
+{% extends "admin_dashboard.html" %}
+{% block content %}
+<div class="header-section"><h1>Feedback & Reviews</h1></div>
+<div class="card">
+    <table>
+        <thead>
+            <tr><th>Event</th><th>Student</th><th>Rating</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+            {% for fb in feedbacks %}
+            <tr>
+                <td><strong>{{ fb.event.title }}</strong></td>
+                <td>{{ fb.student.register_number }}</td>
+                <td style="color: #f59e0b; letter-spacing: 2px;">
+                    {% for i in "12345"|make_list %}{% if forloop.counter <= fb.rating %}★{% else %}☆{% endif %}{% endfor %}
+                </td>
+                <td style="font-style: italic; color: #64748b;">"{{ fb.comment }}"</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

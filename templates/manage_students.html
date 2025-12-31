@@ -1,0 +1,132 @@
+{% extends "admin_dashboard.html" %}
+
+{% block content %}
+<style>
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .btn-primary {
+        background: #001529;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+    .btn-primary:hover { background: #1890ff; color: white; }
+    
+    .action-btn {
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin: 0 4px;
+        font-size: 14px;
+        display: inline-block;
+    }
+    .edit { background: #e6f7ff; color: #1890ff; }
+    .delete { background: #fff1f0; color: #ff4d4f; }
+    
+    .badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #f0f2f5;
+        color: #001529;
+    }
+    .filter-input {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        outline: none;
+        font-size: 14px;
+    }
+    .card {
+        background: white; 
+        padding: 20px; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 15px; color: #64748b; border-bottom: 2px solid #f0f2f5; }
+    td { padding: 15px; border-bottom: 1px solid #f0f2f5; }
+</style>
+
+<div class="header-section">
+    <h1 style="color: #001529; margin: 0;">Student/Alumni List</h1>
+    
+    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <form method="GET" action="{% url 'manage_students' %}" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" name="search" value="{{ request.GET.search|default:'' }}" placeholder="Reg No..." class="filter-input" style="width: 130px;">
+
+            <select name="department" class="filter-input" style="background: white;">
+                <option value="">All Depts</option>
+                <option value="MBA" {% if request.GET.department == "MBA" %}selected{% endif %}>MBA</option>
+                <option value="BBA" {% if request.GET.department == "BBA" %}selected{% endif %}>BBA</option>
+                <option value="BCOM" {% if request.GET.department == "BCOM" %}selected{% endif %}>BCOM</option>
+                <option value="BCA" {% if request.GET.department == "BCA" %}selected{% endif %}>BCA</option>
+                <option value="MCOM" {% if request.GET.department == "MCOM" %}selected{% endif %}>MCOM</option>
+            </select>
+
+            <input type="number" name="year" value="{{ request.GET.year|default:'' }}" placeholder="Year" class="filter-input" style="width: 90px;">
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+
+            {% if request.GET.search or request.GET.department or request.GET.year %}
+                <a href="{% url 'manage_students' %}" style="color: #ff4d4f; text-decoration: none; font-size: 0.85rem;">Clear</a>
+            {% endif %}
+        </form>
+        
+        <a href="{% url 'add_student' %}" class="btn-primary" style="background: #c5b358; color: #001529;">
+            <i class="fas fa-plus"></i> Add Student
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>REG NO.</th>
+                <th>DEPARTMENT</th>
+                <th>PASSOUT YEAR</th>
+                <th style="text-align: center;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td><strong>{{ student.register_number }}</strong></td>
+                <td><span class="badge">{{ student.department }}</span></td>
+                <td>{{ student.passed_out_year }}</td>
+                <td style="text-align: center;">
+                    <a href="{% url 'edit_student' student.id %}" class="action-btn edit"><i class="fas fa-user-edit"></i></a>
+                    <a href="{% url 'delete_student' student.id %}" class="action-btn delete" onclick="return confirm('Delete {{ student.register_number }}?')"><i class="fas fa-trash-alt"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 60px; color: #94a3b8;">
+                    <i class="fas fa-user-slash" style="font-size: 3rem; display: block; margin-bottom: 15px; opacity: 0.3;"></i>
+                    No records found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

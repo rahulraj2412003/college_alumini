@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile | Parivarthana Business School</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #002147;
+            --accent: #a51c30;
+            --gold: #c5b358;
+            --light: #f4f7f6;
+            --white: #ffffff;
+            --text: #333;
+            --success: #28a745;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--light); 
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: var(--primary);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { color: white; font-family: 'Merriweather', serif; font-size: 1.3rem; text-decoration: none; }
+        .nav-links a { color: white; text-decoration: none; font-size: 0.9rem; font-weight: 600; margin-left: 20px; }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        h2, h3 { 
+            font-family: 'Merriweather', serif; 
+            color: var(--primary); 
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gold);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .reg-number-info {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+        }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+        }
+
+        /* Table Styling */
+        .table-wrapper { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        /* Feedback Icon Styles */
+        .feedback-action {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .icon-pending {
+            color: var(--gold);
+            background: rgba(197, 179, 88, 0.1);
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .icon-pending:hover {
+            background: var(--gold);
+            color: var(--primary);
+        }
+
+        .icon-completed {
+            color: var(--success);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .footer-links a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .btn-logout { color: var(--accent) !important; }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">PARIVARTHANA</a>
+        <div class="nav-links">
+            <a href="{% url 'student_home' %}">Dashboard</a>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="profile-card">
+            <h2><i class="fas fa-user-graduate"></i> Student Profile</h2>
+
+            <div class="reg-number-info">
+                Register Number: {{ student.register_number }}
+            </div>
+
+            <label>Full Name</label>
+            <input type="text" value="{{ student.name }}" readonly>
+
+            <label>Department</label>
+            <input type="text" value="{{ student.department }}" readonly>
+
+            <label>Passed Out Year</label>
+            <input type="number" value="{{ student.passed_out_year }}" readonly>
+        </div>
+
+        <div class="profile-card">
+            <h3><i class="fas fa-calendar-check"></i> Your Registered Events</h3>
+
+            {% if registrations %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in registrations %}
+                        <tr>
+                            <td><strong>{{ r.event.title }}</strong></td>
+                            <td>{{ r.event.date }}</td>
+                            <td><span style="color: var(--success); font-size: 0.8rem;"><i class="fas fa-check-circle"></i> Registered</span></td>
+                            <td>
+                                {% if r.feedback_given %}
+                                    <span class="icon-completed">
+                                        <i class="fas fa-check-double"></i> Submitted
+                                    </span>
+                                {% else %}
+                                    <a href="{% url 'submit_feedback' r.event.id %}" class="feedback-action icon-pending">
+                                        <i class="fas fa-comment-dots"></i> Give Feedback
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="margin-top: 15px; color: #666; font-style: italic;">
+                You have not registered for any events yet.
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="footer-links">
+            <a href="{% url 'student_home' %}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="{% url 'logout' %}" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% extends "admin_dashboard.html" %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    .btn-primary {
+        background: #001529;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .btn-primary:hover { background: #1890ff; }
+    
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 15px; color: #64748b; border-bottom: 2px solid #f0f2f5; }
+    td { padding: 15px; border-bottom: 1px solid #f0f2f5; }
+    
+    .action-btn {
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin: 0 4px;
+        display: inline-block;
+    }
+    .edit { background: #e6f7ff; color: #1890ff; }
+    .delete { background: #fff1f0; color: #ff4d4f; border: none; cursor: pointer; }
+</style>
+
+<div class="header-section">
+    <h1>Event Management</h1>
+    <a href="{% url 'add_event' %}" class="btn-primary">
+        <i class="fas fa-plus"></i> Add New Event
+    </a>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>TITLE</th>
+                <th>DATE</th>
+                <th style="text-align: center;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td><strong>{{ event.title }}</strong></td>
+                <td>{{ event.date|date:"M d, Y" }}</td>
+                <td style="text-align: center;">
+                    <a href="{% url 'edit_event' event.id %}" class="action-btn edit" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    
+                    <a href="{% url 'delete_event' event.id %}" 
+                       class="action-btn delete" 
+                       onclick="return confirmDelete(event, '{{ event.title }}')" 
+                       title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">
+                    No events scheduled yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 1. Success/Error Messages from Django
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "{% if message.tags == 'success' %}Success!{% else %}Notification{% endif %}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}",
+                confirmButtonColor: '#001529'
+            });
+        {% endfor %}
+    {% endif %}
+
+    // 2. Custom Delete Confirmation
+    function confirmDelete(e, title) {
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete "${title}". This action cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff4d4f',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+        return false;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "admin_dashboard.html" %}
+
+{% block content %}
+<style>
+    /* Exact same CSS from Student Management */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    .btn-primary {
+        background: #001529;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .btn-primary:hover {
+        background: #1890ff;
+    }
+    .action-btn {
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin: 0 4px;
+        font-size: 14px;
+        display: inline-block;
+    }
+    .edit { background: #e6f7ff; color: #1890ff; }
+    .delete { background: #fff1f0; color: #ff4d4f; }
+    
+    .badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #f0f2f5; /* Matching badge background */
+        color: #001529;
+    }
+
+    /* Additional consistency fixes */
+    .faculty-card {
+        background: white; 
+        padding: 20px; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 15px; color: #64748b; border-bottom: 2px solid #f0f2f5; font-size: 14px; }
+    td { padding: 15px; border-bottom: 1px solid #f0f2f5; }
+</style>
+
+<div class="header-section">
+    <h1 style="color: #001529;">Faculty Directory</h1>
+    
+    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <form method="GET" action="{% url 'manage_teachers' %}" style="display: flex; gap: 10px; align-items: center;">
+            
+            <input type="text" name="search" value="{{ request.GET.search|default:'' }}" 
+                   placeholder="Search Name or Email..." 
+                   style="padding: 10px; border-radius: 6px; border: 1px solid #ddd; width: 200px; outline: none;">
+
+            <select name="department" style="padding: 10px; border-radius: 6px; border: 1px solid #ddd; background: white; outline: none;">
+                <option value="">All Departments</option>
+                <option value="MBA" {% if request.GET.department == "MBA" %}selected{% endif %}>MBA</option>
+                <option value="BBA" {% if request.GET.department == "BBA" %}selected{% endif %}>BBA</option>
+                <option value="BCOM" {% if request.GET.department == "BCOM" %}selected{% endif %}>BCOM</option>
+                <option value="BCA" {% if request.GET.department == "BCA" %}selected{% endif %}>BCA</option>
+                <option value="MCOM" {% if request.GET.department == "MCOM" %}selected{% endif %}>MCOM</option>
+            </select>
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+
+            {% if request.GET.search or request.GET.department %}
+                <a href="{% url 'manage_teachers' %}" style="color: #ff4d4f; text-decoration: none; font-size: 0.85rem; margin-left: 5px;">Clear</a>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'add_teacher' %}" class="btn-primary" style="background: #c5b358; color: #001529;">
+            <i class="fas fa-plus"></i> Add Faculty
+        </a>
+    </div>
+</div>
+
+<div class="faculty-card">
+    <table>
+        <thead>
+            <tr>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>DEPARTMENT</th>
+                <th style="text-align: center;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher in teachers %}
+            <tr>
+                <td><strong>{{ teacher.user.get_full_name|default:teacher.user.username }}</strong></td>
+                <td>{{ teacher.user.email }}</td>
+                <td>
+                    <span class="badge">
+                        {{ teacher.department }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{% url 'edit_teacher' teacher.id %}" class="action-btn edit" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'delete_teacher' teacher.id %}" class="action-btn delete" 
+                       onclick="return confirm('Are you sure you want to delete faculty member {{ teacher.user.username }}?')" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 60px; color: #94a3b8;">
+                    <i class="fas fa-chalkboard-teacher" style="font-size: 3rem; display: block; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p>No faculty records found.</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
