@@ -33,12 +33,14 @@ ALLOWED_HOSTS = ['*'] # Or your-app-name.onrender.com
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
     'accounts',
     'events',
 ]
@@ -151,4 +153,5 @@ SESSION_COOKIE_AGE = 3600 # 1 hour of activity
 
 # Security to prevent script-based session theft
 SESSION_COOKIE_HTTPONLY = True
+
 SESSION_COOKIE_SAMESITE = 'Lax'
