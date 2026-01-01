@@ -259,7 +259,7 @@
         {% if events %}
             {% for event in events %}
             <div class="event-card">
-                <img src="{{ event.image.url }}" class="event-img">
+                <img src="{{ event.image.url }}" alt="Event Image">
                 <div class="event-body">
                     <h3>{{ event.title }}</h3>
                     <p>{{ event.description|truncatechars:100 }}</p>
@@ -320,4 +320,5 @@
     }
 </script>
 </body>
+
 </html>
