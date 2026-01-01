@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-import os
+
 import dj_database_url
 
 SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-^3!y82ov&ujso3k+7fc=l7*ow-_hy&-gfl8k0=sd7h9^s+*a5n')
@@ -162,6 +163,8 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
+
+
 # Use this instead of DEFAULT_FILE_STORAGE
 STORAGES = {
     "default": {
@@ -171,4 +174,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
 
