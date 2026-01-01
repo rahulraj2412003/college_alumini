@@ -155,3 +155,13 @@ SESSION_COOKIE_AGE = 3600 # 1 hour of activity
 SESSION_COOKIE_HTTPONLY = True
 
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
